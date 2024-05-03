@@ -6,3 +6,7 @@ spring:
     url: jdbc:mariadb://localhost:3306/sbb_dev
     username: root
     password:
+  jpa:
+    hibernate:
+      ddl-auto: create
+    show-slq: true
