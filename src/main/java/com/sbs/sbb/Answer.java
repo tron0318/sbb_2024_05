@@ -20,7 +20,10 @@ public class Answer {
     private LocalDateTime createDate;
 
 
-    // private Inteager qeustionId;
+
+    // Many = Answer, One = Question
+    //ManyToOne 같은경우는 필수로적어줘야됌
     @ManyToOne
     private Question question;
+
 }
