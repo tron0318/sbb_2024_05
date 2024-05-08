@@ -3,3 +3,13 @@
     <h3 th:text="${question.subject}"></h3>
     <h3 th:text="${question.content}"></h3>
 </h2>
+
+<form action="/question/createTemp" method="POST">
+    <div>
+        <span>내용</span>
+        <br>
+        <textarea name="content" placeholder="내용" rows="5" ></textarea>
+    </div>
+
+    <button type="submit">답변등록</button>
+</form>
