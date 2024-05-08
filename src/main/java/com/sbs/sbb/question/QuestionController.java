@@ -30,9 +30,5 @@ public class QuestionController {
         return "question_detail";
     }
 
-    @PostMapping("/createTemp")
-    @ResponseBody
-    public String temp(){
-        return "전송완료";
-    }
+
 }

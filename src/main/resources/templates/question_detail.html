@@ -4,7 +4,7 @@
     <h3 th:text="${question.content}"></h3>
 </h2>
 
-<form action="/question/createTemp" method="POST">
+<form th:action="@{|/answer/create/${question.id}|}" method="post">
     <div>
         <span>내용</span>
         <br>
