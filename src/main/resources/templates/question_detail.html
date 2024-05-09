@@ -4,6 +4,13 @@
     <h3 th:text="${question.content}"></h3>
 </h2>
 
+<h5 th:text="|${#lists.size(question.answerList)}개의 답변이 있습니다.|"></h5>
+<div>
+    <ul>
+        <li th:each="answer : ${question.answerList}" th:text="${answer.content}"></li>
+    </ul>
+</div>
+
 <form th:action="@{|/answer/create/${question.id}|}" method="post">
     <div>
         <span>내용</span>
