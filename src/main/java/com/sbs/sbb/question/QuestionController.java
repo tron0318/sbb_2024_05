@@ -36,10 +36,9 @@ public class QuestionController {
     }
 
     @GetMapping("/create")
-    public String questionCreate() {
+    public String questionCreate(QuestionForm questionForm) {
         return "question_form";
     }
-
     @PostMapping("/create")
     // QuestionForm 값을 바인딩 할때 유효성 체크를해라
     // QuestionFrom 변수는 model.addAttribute 없이 바로 뷰에서 접근할수있음.
