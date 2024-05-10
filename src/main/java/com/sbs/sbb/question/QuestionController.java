@@ -1,9 +1,13 @@
 package com.sbs.sbb.question;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.List;
 
@@ -36,11 +40,9 @@ public class QuestionController {
     }
 
     @PostMapping("/create")
-    public String questionCreate(QuestionForm questionForm) {
-        String subject = questionForm.getSubject();
-        String content = questionForm.getSubject();
+    public String questionCreate(@Valid QuestionForm questionForm) {
 
-        Question q = this.questionService.create(subject, content);
+        Question q = this.questionService.create(questionForm.getSubject(), questionForm.getContent());
         return "redirect:/question/list";
     }
 
