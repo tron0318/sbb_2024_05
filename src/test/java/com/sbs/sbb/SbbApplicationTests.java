@@ -5,6 +5,8 @@ import com.sbs.sbb.answer.AnswerRepository;
 import com.sbs.sbb.question.Question;
 import com.sbs.sbb.question.QuestionRepository;
 import com.sbs.sbb.question.QuestionService;
+import com.sbs.sbb.user.UserRepository;
+import com.sbs.sbb.user.UserService;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -26,19 +28,33 @@ class SbbApplicationTests {
 	@Autowired
 	private QuestionService questionService;
 	@Autowired
+	private UserService userService;
+
+	@Autowired
 	private QuestionRepository questionRepository;
 	@Autowired
 	private AnswerRepository answerRepository;
+	@Autowired
+	private UserRepository userRepository;
 
 	@BeforeEach
 		// 아래 메서드는 각 테스트케이스가 실행되기 전에 실행된다.
 	void beforeEach() {
 		// 모든 데이터 삭제
 		answerRepository.deleteAll();
+		answerRepository.clearAutoIncrement();
 
 		// 모든 데이터 삭제
-		answerRepository.deleteAll();
+		questionRepository.deleteAll();
+		questionRepository.clearAutoIncrement();
 
+		// 모든 데이터 삭제
+		// 흔적 삭제 -> 다음번 INSERT를 할 때 id가 1번으로 설정되도록
+		userRepository.clearAutoIncrement();
+
+		// 회원 2명 생성
+		userService.create("user1", "user1@test.com", "1234");
+		userService.create("user2", "user2@test.com", "1234");
 
 		// 질문 1개 생성
 		Question q1 = new Question();
@@ -54,8 +70,12 @@ class SbbApplicationTests {
 		q2.setCreateDate(LocalDateTime.now());
 		questionRepository.save(q2);  // 두번째 질문 저장
 
-
-
+		// 답변 1개 생성
+		Answer a1 = new Answer();
+		a1.setContent("네. 자동으로 생성됩니다.");
+		a1.setQuestion(q2);
+		a1.setCreateDate(LocalDateTime.now());
+		answerRepository.save(a1);  // 첫번째 답변 저장
 	}
 
 	@Test
@@ -176,7 +196,7 @@ class SbbApplicationTests {
 	@Test
 	@DisplayName("답변 데이터 생성 후 저장하기")
 	void t009() {
-		Optional<Question> oq = questionRepository.findById(2);
+		Optional<Question> oq = this.questionRepository.findById(2);
 		assertTrue(oq.isPresent());
 		Question q = oq.get();
 
