@@ -37,7 +37,7 @@ class SbbApplicationTests {
 		answerRepository.deleteAll();
 
 		// 모든 데이터 삭제
-		questionRepository.deleteAll();
+		answerRepository.deleteAll();
 
 
 		// 질문 1개 생성
