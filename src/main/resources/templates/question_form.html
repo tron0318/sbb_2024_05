@@ -2,8 +2,9 @@
 <div layout:fragment="content" class="container my-3">
     <h5 class="my-3 border-bottom pb-2">질문등록</h5>
 
-    <form th:action="@{/question/create}" method="post" th:object="${questionForm}">
+    <form th:action method="post" th:object="${questionForm}">
         <div th:replace="~{form_errors :: formErrorsFragment}"></div>
+
         <div class="mb-3">
             <label for="subject" class="form-label">제목</label>
             <input required maxlength="200" placeholder="제목(200자 이하)"  th:field="*{subject}" type="text" class="form-control">

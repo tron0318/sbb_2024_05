@@ -2,7 +2,6 @@ package com.sbs.sbb;
 
 import com.sbs.sbb.answer.Answer;
 import com.sbs.sbb.answer.AnswerRepository;
-import com.sbs.sbb.answer.AnswerService;
 import com.sbs.sbb.question.Question;
 import com.sbs.sbb.question.QuestionRepository;
 import com.sbs.sbb.question.QuestionService;
@@ -17,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Rollback;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.IntStream;
@@ -29,9 +29,8 @@ class SbbApplicationTests {
 	@Autowired
 	private QuestionService questionService;
 	@Autowired
-	private AnswerService answerService;
-	@Autowired
 	private UserService userService;
+
 	@Autowired
 	private QuestionRepository questionRepository;
 	@Autowired
@@ -52,30 +51,43 @@ class SbbApplicationTests {
 
 		// 모든 데이터 삭제
 		// 흔적 삭제 -> 다음번 INSERT를 할 때 id가 1번으로 설정되도록
-		userRepository.deleteAll();
 		userRepository.clearAutoIncrement();
 
 		// 회원 2명 생성
-		SiteUser user1 = userService.create("user1", "user1@test.com", "1234");
-		SiteUser user2 = userService.create("user2", "user2@test.com", "1234");
+		userService.create("user1", "user1@test.com", "1234");
+		userService.create("user2", "user2@test.com", "1234");
 
 		// 질문 1개 생성
-		Question q1 = questionService.create("sbb가 무엇인가요?", "sbb에 대해서 알고 싶습니다.", user1);
+		Question q1 = new Question();
+		q1.setSubject("sbb가 무엇인가요?");
+		q1.setContent("sbb에 대해서 알고 싶습니다.");
+		q1.setCreateDate(LocalDateTime.now());
+		questionRepository.save(q1);  // 첫번째 질문 저장
 
 		// 질문 1개 생성
-		Question q2 = questionService.create("스프링부트 모델 질문입니다.", "id는 자동으로 생성되나요?", user2);
+		Question q2 = new Question();
+		q2.setSubject("스프링부트 모델 질문입니다.");
+		q2.setContent("id는 자동으로 생성되나요?");
+		q2.setCreateDate(LocalDateTime.now());
+		questionRepository.save(q2);  // 두번째 질문 저장
 
 		// 답변 1개 생성
-		Answer a1 = answerService.create(q2, "네 자동으로 생성됩니다.", user2);
+		Answer a1 = new Answer();
+		a1.setContent("네. 자동으로 생성됩니다.");
+		a1.setQuestion(q2);
+		a1.setCreateDate(LocalDateTime.now());
+		answerRepository.save(a1);  // 첫번째 답변 저장
 	}
 
 	@Test
 	@DisplayName("데이터 저장")
 	void t001() {
-		SiteUser user1 = userService.getUser("user1");
-
 		// 질문 1개 생성
-		Question q1 = questionService.create("세계에서 가장 부유한 국가가 어디인가요?", "알고 싶습니다.", user1);
+		Question q = new Question();
+		q.setSubject("세계에서 가장 부유한 국가가 어디인가요?");
+		q.setContent("알고 싶습니다.");
+		q.setCreateDate(LocalDateTime.now());
+		questionRepository.save(q);
 
 		assertEquals("세계에서 가장 부유한 국가가 어디인가요?", questionRepository.findById(3).get().getSubject());
 	}
@@ -199,9 +211,11 @@ class SbbApplicationTests {
         // v2
         Question q = questionRepository.findById(2).get();
         */
-		SiteUser user2 = userService.getUser("user2");
 
-		Answer a = answerService.create(q, "네 자동으로 생성됩니다.", user2);
+		Answer a = new Answer();
+		a.setContent("네 자동으로 생성됩니다.");
+		a.setQuestion(q);  // 어떤 질문의 답변인지 알기위해서 Question 객체가 필요하다.
+		a.setCreateDate(LocalDateTime.now());
 		answerRepository.save(a);
 	}
 
@@ -219,7 +233,7 @@ class SbbApplicationTests {
 	@Test
 	@DisplayName("질문에 달린 답변 찾기")
 	void t011() {
-		Optional<Question> oq = this.questionRepository.findById(2);
+		Optional<Question> oq = questionRepository.findById(2);
 		assertTrue(oq.isPresent());
 		Question q = oq.get();
 
@@ -233,9 +247,8 @@ class SbbApplicationTests {
 	@DisplayName("대량 테스트 데이터 만들기")
 	void t012() {
 		SiteUser user1 = userService.getUser("user1");
-
-		for ( int i = 1; i <= 300; i++ ) {
-			String subject = String.format("테스트 데이터 입니다.:[%03d]", i);
+		for (int i = 1; i <= 300; i++) {
+			String subject = String.format("테스트 데이터입니다:[%03d]", i);
 			String content = "내용무";
 			this.questionService.create(subject, content, user1);
 		}
@@ -246,8 +259,7 @@ class SbbApplicationTests {
 	@DisplayName("스트림 버전 데이터 밀어넣기")
 	void t013() {
 		SiteUser user1 = userService.getUser("user1");
-
 		IntStream.rangeClosed(3, 300)
-				.forEach(no -> questionService.create("테스트 제목 입니다. %d".formatted(no),"테스트 내용입니다. %d".formatted(no), user1));
+				.forEach(no -> questionService.create("테스트 제목 입니다. %d".formatted(no),"테스트 내용입니다. %d".formatted(no),user1));
 	}
 }

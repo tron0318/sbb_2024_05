@@ -20,6 +20,7 @@ public class Answer {
     private String content;
 
     private LocalDateTime createDate;
+    private LocalDateTime modifyDate;
 
     // Many = Answer, One = Question
     // 필수
