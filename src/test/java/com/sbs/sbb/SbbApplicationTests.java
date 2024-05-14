@@ -5,6 +5,7 @@ import com.sbs.sbb.answer.AnswerRepository;
 import com.sbs.sbb.question.Question;
 import com.sbs.sbb.question.QuestionRepository;
 import com.sbs.sbb.question.QuestionService;
+import com.sbs.sbb.user.SiteUser;
 import com.sbs.sbb.user.UserRepository;
 import com.sbs.sbb.user.UserService;
 import jakarta.transaction.Transactional;
@@ -18,6 +19,7 @@ import org.springframework.test.annotation.Rollback;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.IntStream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -244,18 +246,20 @@ class SbbApplicationTests {
 	@Test
 	@DisplayName("대량 테스트 데이터 만들기")
 	void t012() {
+		SiteUser user1 = userService.getUser("user1");
 		for (int i = 1; i <= 300; i++) {
 			String subject = String.format("테스트 데이터입니다:[%03d]", i);
 			String content = "내용무";
-			this.questionService.create(subject, content, null);
+			this.questionService.create(subject, content, user1);
 		}
 	}
 
 
-//	@Test
-//	@DisplayName("스트림 버전 데이터 밀어넣기")
-//	void t013() {
-//		IntStream.rangeClosed(3, 300)
-//				.forEach(no -> questionService.create("테스트 제목 입니다. %d".formatted(no),"테스트 내용입니다. %d".formatted(no)));
-//	}
+	@Test
+	@DisplayName("스트림 버전 데이터 밀어넣기")
+	void t013() {
+		SiteUser user1 = userService.getUser("user1");
+		IntStream.rangeClosed(3, 300)
+				.forEach(no -> questionService.create("테스트 제목 입니다. %d".formatted(no),"테스트 내용입니다. %d".formatted(no),user1));
+	}
 }
