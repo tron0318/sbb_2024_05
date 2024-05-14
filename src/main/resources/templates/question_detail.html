@@ -12,13 +12,20 @@
                         <span th:if="${question.author != null}" th:text="${question.author.username}"></span>
                     </div>
                     <div th:text="${#temporals.format(question.createDate, 'yyyy-MM-dd HH:mm')}"></div>
-                    <div class="my-3">
-                        <a th:href="@{|/question/modify/${question.id}|}" class="btn btn-sm btn-outline-secondary"
-                           sec:authorize="isAuthenticated()"
-                           th:if="${question.author != null and #authentication.getPrincipal().getUsername() == question.author.username}"
-                           th:text="수정"></a>
-                    </div>
+
                 </div>
+
+            </div>
+            <div class="my-3">
+                <a th:href="@{|/question/modify/${question.id}|}" class="btn btn-sm btn-outline-secondary"
+                   sec:authorize="isAuthenticated()"
+                   th:if="${question.author != null and #authentication.getPrincipal().getUsername() == question.author.username}"
+                   th:text="수정"></a>
+                <a onclick="return confirm('정말로 삭제하시겠습니까?');" th:href="@{|/question/delete/${question.id}|}"
+                   class="delete btn btn-sm btn-outline-secondary"
+                   sec:authorize="isAuthenticated()"
+                   th:if="${question.author != null and #authentication.getPrincipal().getUsername() == question.author.username}"
+                   th:text="삭제"></a>
             </div>
         </div>
     </div>
