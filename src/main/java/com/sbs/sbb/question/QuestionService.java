@@ -1,8 +1,7 @@
 package com.sbs.sbb.question;
 
-import com.sbs.sbb.answer.Answer;
 import com.sbs.sbb.DataNotFoundException;
-import com.sbs.sbb.question.QuestionRepository;
+import com.sbs.sbb.answer.Answer;
 import com.sbs.sbb.user.SiteUser;
 import jakarta.persistence.criteria.*;
 import lombok.RequiredArgsConstructor;
@@ -55,8 +54,14 @@ public class QuestionService {
         sorts.add(Sort.Order.desc("createDate"));
 
         Pageable pageable = PageRequest.of(page, 10, Sort.by(sorts));
+
+        if ( kw == null || kw.trim().length() == 0 ) {
+            return questionRepository.findAll(pageable);
+        }
+
         Specification<Question> spec = search(kw);
-        return this.questionRepository.findAll(spec, pageable);
+
+        return questionRepository.findAll(spec, pageable);
     }
 
     public void modify(Question question, String subject, String content) {
