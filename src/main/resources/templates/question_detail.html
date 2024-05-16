@@ -17,10 +17,10 @@
 
             </div>
             <div class="my-3">
-                <a href="javascript:void(0);" class="recommend btn btn-sm btn-outline-secondary"
-                   th:data-uri="@{|/question/vote/${question.id}|}">
+                <a onclick="return confirm('정말로 추천하시겠습니까?');" class="recommend btn btn-sm btn-outline-secondary"
+                   th:href="@{|/question/vote/${question.id}|}">
                     추천
-                    <span class="badge rounded-pill bg-success" th:text="${#lists.size(question.voter)}"></span>
+                    <span class="badge rounded-pill bg-success" th:text="${#lists.size(question.voters)}"></span>
                 </a>
                 <a th:href="@{|/question/modify/${question.id}|}" class="btn btn-sm btn-outline-secondary"
                    sec:authorize="isAuthenticated()"
