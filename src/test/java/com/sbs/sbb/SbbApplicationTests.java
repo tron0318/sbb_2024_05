@@ -15,6 +15,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
 import org.springframework.test.annotation.Rollback;
 
 import java.util.List;
@@ -265,5 +266,47 @@ class SbbApplicationTests {
 
 		IntStream.rangeClosed(3, 300)
 				.forEach(no -> questionService.create("테스트 제목 입니다. %d".formatted(no),"테스트 내용입니다. %d".formatted(no), user1));
+	}
+
+	@Test
+	@DisplayName("검색, 질문 제목으로 검색")
+	void t014() {
+		Page<Question> searchResult = questionService.getList(0, "sbb가 무엇인가요?");
+
+		assertEquals(1, searchResult.getTotalElements());
+	}
+
+	@Test
+	@DisplayName("검색, 질문 내용으로 검색")
+	void t015() {
+		Page<Question> searchResult = questionService.getList(0, "sbb에 대해서 알고 싶습니다.");
+
+		assertEquals(1, searchResult.getTotalElements());
+	}
+
+	@Test
+	@DisplayName("검색, 질문자 이름으로 검색")
+	void t016() {
+		Page<Question> searchResult = questionService.getList(0, "user2");
+
+		assertEquals(1, searchResult.getTotalElements());
+	}
+
+	@Test
+	@DisplayName("검색, 답변 내용으로 검색")
+	void t017() {
+		Page<Question> searchResult = questionService.getList(0, "네 자동으로 생성됩니다.");
+
+		assertEquals(2, searchResult.getContent().get(0).getId());
+		assertEquals(1, searchResult.getTotalElements());
+	}
+
+	@Test
+	@DisplayName("검색, 답변자 이름으로 검색")
+	void t018() {
+		Page<Question> searchResult = questionService.getList(0, "user2");
+
+		assertEquals(2, searchResult.getContent().get(0).getId());
+		assertEquals(1, searchResult.getTotalElements());
 	}
 }
